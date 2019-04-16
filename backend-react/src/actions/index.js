@@ -1,104 +1,102 @@
-import axios from '../config/axios'
-import cookies from 'universal-cookie'
+import axios from "../config/axios";
+import cookies from "universal-cookie";
 
-const cookie = new cookies()
-
-export const onLogout = () => {
-    cookie.remove("masihLogin");
-  cookie.remove("idLogin");
-  cookie.remove("ageLogin");
-    return{
-        type: "LOGOUT"
-    }
-}
-
-export const onLogoutUser = () => {
-    cookie.remove('masihLogin')
-     return {
-         type: 'LOGOUT_USER'
-     }
-}
+const cookie = new cookies();
 
 export const onRegister = (name, age, email, password) => {
-    return dispatch => {
-        axios.post('/users', {
-                name, age, email, password
-        }).then(res => {
-            console.log("YEaaaayyy");
-            
-        }).catch(e => {
-            console.log(e.response.data.replace('User validation failed: ', ''));
-        })
-    }
-}
+  return dispatch => {
+    axios
+      .post("/users", {
+        name,
+        age,
+        email,
+        password
+      })
+      .then(res => {
+        console.log("YEaaaayyy");
+      })
+      .catch(e => {
+        console.log(e.response.data.replace("User validation failed: ", ""));
+      });
+  };
+};
 
 export const onLogin = (email, password) => {
-    return async dispatch => {
-        try {
-            const res = await axios.post('/users/login', {email, password})
-            console.log(res);
-            
-            cookie.set('masihLogin', res.data.name, {path:'/'})
-            cookie.set('idLogin', res.data._id, {path:'/'})
-            cookie.set("ageLogin", res.data.age, { path: "/" })
+  return async dispatch => {
+    try {
+      const res = await axios.post("/users/login", { email, password });
+      console.log(res);
 
-            dispatch({
-                type: 'LOGIN_SUCCESS',
-                payload: {
-                    id: res.data._id , name: res.data.name, age: res.data.age
-                }
-            })
-            
-        } catch (e) {
-            console.log(e);
-            
-        }
-    }
-    
-}
+      cookie.set("masihLogin", res.data.name, { path: "/" });
+      cookie.set("idLogin", res.data._id, { path: "/" });
+      cookie.set("ageLogin", res.data.age, { path: "/" });
 
-export const onEdit = (name, age, userid) => {
-    return async dispatch => {
-      try {
-        const res = await axios.patch(`/users/${userid}`, {
-          name,
-          age
-        });
-        cookie.set("masihLogin", res.data.name, { path: "/" });
-        cookie.set("idLogin", res.data._id, { path: "/" });
-        cookie.set("ageLogin", res.data.age, { path: "/" });
-        dispatch({
-          type: "EDIT_SUCCESS",
-          payload: {
-            id: res.data._id,
-            name: res.data.name,
-            age: res.data.age
-          }
-        });
-      } catch (e) {
-        console.log(e);
-      }
-    };
-  };
-
-  export const keepLogin = (name, id, age) => {
-    if (name === undefined || id === undefined) {
-      return {
-        type: "KEEP_LOGIN",
+      dispatch({
+        type: "LOGIN_SUCCESS",
         payload: {
-          id: "",
-          name: "",
-          age: 0
+          id: res.data._id,
+          name: res.data.name,
+          age: res.data.age
         }
-      };
+      });
+    } catch (e) {
+      console.log(e);
     }
-  
+  };
+};
+
+export const onEdit = (name, age, userId) => {
+  return async dispatch => {
+    try {
+      const res = await axios.patch(`/users/${userId}`, {
+        name,
+        age
+      });
+      cookie.set("masihLogin", res.data.name, { path: "/" });
+      cookie.set("idLogin", res.data._id, { path: "/" });
+      cookie.set("ageLogin", res.data.age, { path: "/" });
+      dispatch({
+        type: "EDIT_SUCCESS",
+        payload: {
+          id: res.data._id,
+          name: res.data.name,
+          age: res.data.age
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+
+
+export const onLogout = () => {
+  cookie.remove("masihLogin");
+  cookie.remove("idLogin");
+  cookie.remove("ageLogin");
+  return {
+    type: "LOGOUT"
+  };
+};
+
+export const keepLogin = (name, id, age) => {
+  if (name === undefined || id === undefined) {
     return {
       type: "KEEP_LOGIN",
       payload: {
-        id,
-        name,
-        age
+        id: "",
+        name: "",
+        age: 0
       }
     };
+  }
+
+  return {
+    type: "KEEP_LOGIN",
+    payload: {
+      id,
+      name,
+      age
+    }
   };
+};

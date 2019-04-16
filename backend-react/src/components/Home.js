@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import axios from "../config/axios";
-import { Redirect } from "react-router-dom";
 import cookies from "universal-cookie";
+import { Redirect } from "react-router-dom";
 
-const cookie = new cookies();
+const cookie = new cookies()
 
 class Home extends Component {
   state = {
@@ -18,8 +18,6 @@ class Home extends Component {
   getTasks = async () => {
     try {
       const res = await axios.get(`/tasks/${cookie.get("idLogin")}`);
-
-      //   const res = await axios.get(`/tasks/${cookie.get("idLogin")}`);
       this.setState({ tasks: res.data });
     } catch (e) {
       console.log(e);
@@ -31,59 +29,6 @@ class Home extends Component {
       data: { taskid, owner }
     });
     this.getTasks();
-  };
-
-  renderList = () => {
-    console.log(this.state.tasks);
-
-    return this.state.tasks.map(task => {
-      if (task.completed === false) {
-        return (
-          <li
-            onDoubleClick={() => {
-              this.onDouble(task._id, this.props.id);
-            }}
-            className="list-group-item d-flex justify-content-between row-hl"
-            key={task._id}
-          >
-            <span className="item-hl">{task.description}</span>
-
-            <span className="item-hl">
-              <button
-                className="btn btn-outline-primary"
-                onClick={() => {
-                  this.sudahTask(task._id, this.props.id);
-                }}
-              >
-                sudah
-              </button>
-            </span>
-          </li>
-        );
-      }
-      return (
-        <li
-          onDoubleClick={() => {
-            this.onDouble(task._id, this.props.id);
-          }}
-          className="list-group-item d-flex bg-secondary justify-content-between row-hl"
-          key={task._id}
-        >
-          <span className="item-hl">{task.description}</span>
-
-          <span className="item-hl">
-            <button
-              className="btn btn-outline-warning"
-              onClick={() => {
-                this.belumTask(task._id, this.props.id);
-              }}
-            >
-              belum
-            </button>
-          </span>
-        </li>
-      );
-    });
   };
 
   addTask = async userid => {
@@ -99,7 +44,7 @@ class Home extends Component {
     }
   };
 
-  sudahTask = async (taskid, userid) => {
+  doneTask = async (taskid, userid) => {
     try {
       await axios.patch(`/tasks/${taskid}/${userid}`, {
         completed: true
@@ -110,19 +55,77 @@ class Home extends Component {
     }
   };
 
-  belumTask = async (taskid, userid) => {
+  unDoneTask = async (taskid, userid) => {
     try {
-      await axios.patch(`/tasks/${taskid}/${userid}`, {
+      await axios.patch(`/tasks/${taskid}/${userid}`,{
         completed: false
-      });
-      this.getTasks();
+      })
+      this.getTasks()
     } catch (e) {
       console.log(e);
+      
     }
+  }
+
+  renderList = () => {
+    
+    return this.state.tasks.map(task => {
+      const status = task.completed
+      if(status ===false){
+        return (
+          <li
+            onDoubleClick={() => {
+              this.onDouble(task._id,this.props.id);
+            }}
+            className="list-group-item d-flex justify-content-between row-hl"
+            key={task._id}
+          >
+            <span className="item-hl">{task.description}</span>
+  
+            <span className="item-hl">
+              <button
+                className="btn btn-outline-primary"
+                onClick={() => {
+                  this.doneTask(task._id, this.props.id);
+                }}
+              >
+                Done
+              </button>
+            </span>
+          </li>
+        );
+      } 
+      else {
+        return (
+          <li
+            onDoubleClick={() => {
+              this.onDouble(task._id, this.props.id);
+            }}
+            className="bg-secondary list-group-item d-flex justify-content-between row-hl"
+            key={task._id}
+          >
+            <span className="item-hl font-weight-bold text-white">{task.description}</span>
+  
+            <span className="item-hl">
+              <button
+                className="btn btn-warning"
+                onClick={() => {
+                  this.unDoneTask(task._id, this.props.id);
+                }}
+              >
+                Un Done
+              </button>
+            </span>
+          </li>
+        );
+      }
+      
+     
+    });
   };
 
   render() {
-    if (this.props.name !== "") {
+    if(this.props.name !==""){
       return (
         <div className="container">
           <h1 className="display-4 text-center animated bounce delay-1s">
@@ -144,12 +147,12 @@ class Home extends Component {
             className="btn btn-block btn-primary mt-3"
             onClick={() => this.addTask(this.props.id)}
           >
-            Up !
+           Add New Task
           </button>
         </div>
       );
     }
-    return <Redirect to="/login" />;
+    return <Redirect to="/login"/>
   }
 }
 

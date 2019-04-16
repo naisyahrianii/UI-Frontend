@@ -40,12 +40,11 @@ class Login extends Component {
                 </div>
             )
         }
-        return <Redirect to='/' />
+        
+        return <Redirect to='/'/>
     }
 }
-
 const mapStateToProps = state => {
     return {user: state.auth}
 }
-
 export default connect(mapStateToProps, {onLogin})(Login)

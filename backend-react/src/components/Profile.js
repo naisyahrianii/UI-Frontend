@@ -29,11 +29,9 @@ class Profile extends Component {
     }
   };
 
-  deleteFile = async userId => {
+  deleteFile = async userid => {
     try {
-      axios.patch(`/avatar/${userId}`, {
-        avatar: null
-      });
+      axios.delete(`/avatar/${userid}`);
     } catch (e) {
       console.log(e);
     }

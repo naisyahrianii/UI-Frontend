@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
-import {onLogout} from '../actions'
 import {
     Button,
     Collapse,
@@ -15,6 +14,8 @@ import {
     NavItem,
     UncontrolledDropdown
     } from 'reactstrap';
+
+import {onLogout} from '../actions'
 
 class Header extends Component {
     constructor(props) {
@@ -31,8 +32,7 @@ class Header extends Component {
           dropdownOpen: !prevState.dropdownOpen
         }));
       }
-
-      render() {
+    render() {
         const {user} = this.props
         if(user.name === ''){
             return ( // register, login
@@ -47,7 +47,7 @@ class Header extends Component {
                                         <Link className="nav-link" to="/">Tasks</Link>
                                     </NavItem>
                                     <NavItem>
-                                        <Link to="/Register"><Button className="mx-3" color="primary">Register</Button></Link>
+                                        <Link to="/register"><Button className="mx-3" color="primary">Register</Button></Link>
                                     </NavItem>
                                     <NavItem>
                                         <Link to="/login"><Button color="success">Login</Button></Link>
@@ -58,7 +58,7 @@ class Header extends Component {
                     </Navbar>
                 </div>
             )
-        }
+        } 
 
         return(
             <div>
@@ -80,7 +80,7 @@ class Header extends Component {
                                         <DropdownItem>Profile</DropdownItem>
                                     </Link>
                                     <DropdownItem divider />
-                                    <Button className="dropdown-item" onClick={this.props.onLogout} href="/">
+                                    <Button className="dropdown-item" onClick={this.props.onLogout}>
                                         Log out
                                     </Button>
                                     
@@ -94,7 +94,9 @@ class Header extends Component {
         )
     }
 }
+
 const mapStateToProps = state => {
     return {user: state.auth}
 }
-export default connect(mapStateToProps, {onLogout})(Header);
+
+export default connect(mapStateToProps,{onLogout})(Header)

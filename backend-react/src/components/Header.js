@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import {Link} from 'react-router-dom'
+import React, { Component } from 'react';
+import {Link} from 'react-router-dom';
 import {connect} from 'react-redux'
+
 import {
     Button,
     Collapse,
     DropdownToggle,
     DropdownMenu,
-    DropdownItem,
     NavbarBrand,
     Navbar,
     NavbarToggler, 
@@ -15,27 +15,31 @@ import {
     UncontrolledDropdown
     } from 'reactstrap';
 
-import {onLogout} from '../actions'
-
+import {onLogoutUser} from '../actions/index'
+    
 class Header extends Component {
     constructor(props) {
         super(props);
-    
-        this.toggle = this.toggle.bind(this);
+
+         this.toggle = this.toggle.bind(this);
         this.state = {
-          dropdownOpen: false
+            isOpen: false
         };
     }
-    
-      toggle() {
-        this.setState(prevState => ({
-          dropdownOpen: !prevState.dropdownOpen
+
+       toggle() {
+        this.setState(({
+            isOpen: !this.state.isOpen
         }));
       }
+
+    
+    
     render() {
         const {user} = this.props
+
         if(user.name === ''){
-            return ( // register, login
+            return (
                 <div>
                     <Navbar color="light" light expand="md">
                         <div className="container">
@@ -58,45 +62,42 @@ class Header extends Component {
                     </Navbar>
                 </div>
             )
-        } 
-
-        return(
+        } return (
             <div>
-                <Navbar color="light" light expand="md">
-                    <div className="container">
-                        <NavbarBrand href="/">ReactMongoose</NavbarBrand>
-                        <NavbarToggler onClick={this.toggle} />
-                        <Collapse isOpen={this.state.isOpen} navbar>
-                            <Nav className="ml-auto" navbar>
-                                <NavItem>
-                                    <Link className="nav-link" to="/">Tasks</Link>
-                                </NavItem>
-                                <UncontrolledDropdown nav inNavbar>
-                                    <DropdownToggle nav caret>
-                                        Hallo {user.name}
-                                    </DropdownToggle>
-                                    <DropdownMenu right>
-                                    <Link className="dropdown-item" to="/profile">
-                                        <DropdownItem>Profile</DropdownItem>
-                                    </Link>
-                                    <DropdownItem divider />
-                                    <Button className="dropdown-item" onClick={this.props.onLogout}>
-                                        Log out
-                                    </Button>
-                                    
-                                    </DropdownMenu>
-                                </UncontrolledDropdown>
-                            </Nav>
-                        </Collapse>
-                    </div>
-                </Navbar>
-            </div>
-        )
+                    <Navbar color="light" light expand="md">
+                        <div className="container">
+                            <NavbarBrand href="/">ReactMongoose</NavbarBrand>
+                            <NavbarToggler onClick={this.toggle} />
+                            <Collapse isOpen={this.state.isOpen} navbar>
+                                <Nav className="ml-auto" navbar>
+                                    <NavItem>
+                                        <Link className="nav-link" to="/">Tasks</Link>
+                                    </NavItem>
+                                    <UncontrolledDropdown nav inNavbar>
+                                        <DropdownToggle nav caret className="text-capitalize">
+                                            Welcome, {user.name}
+                                        </DropdownToggle>
+                                        <DropdownMenu right>
+                                        <Link to="/profile"><Button className="dropdown-item">
+                                            Profile
+                                        </Button></Link>
+                                        <Link to="/login"><Button className="dropdown-item" onClick={this.props.onLogoutUser}>
+                                            Log out
+                                        </Button></Link>
+                                        
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
+                                </Nav>
+                            </Collapse>
+                        </div>
+                    </Navbar>
+                </div>
+          );
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {user: state.auth}
 }
 
-export default connect(mapStateToProps,{onLogout})(Header)
+export default connect (mapStateToProps, {onLogoutUser})(Header);
